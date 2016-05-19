@@ -3,6 +3,7 @@
 -- In your Quartz properties file, you'll need to set 
 -- org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 
+
 CREATE TABLE qrtz_job_details
   (
     SCHED_NAME VARCHAR(120) NOT NULL,
