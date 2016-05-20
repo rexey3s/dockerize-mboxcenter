@@ -13,9 +13,8 @@ nginx-rtmp:
       - "8081:8080"
       - "1935:1935"
     volumes:
-      - ./conf.d/rtmp.conf:/opt/nginx/conf.d/rtmp.conf:ro
+      - ${CONFIG_DIR_PATH}/rtmp.conf:/opt/nginx/conf.d/rtmp.conf:ro
       - ${MEDIA_DIR_PATH}:/var/Videos
-      - stream-data:/opt/rtmp
 icecast2:
   image: infiniteproject/icecast
   container_name: icecast2
