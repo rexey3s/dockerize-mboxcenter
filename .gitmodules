@@ -1,0 +1,3 @@
+[submodule "pi-server"]
+       path = ./pi-server
+       url = ssh://rexey3s@github.com/rexey3s/pi-server
