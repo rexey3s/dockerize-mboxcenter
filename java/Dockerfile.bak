@@ -1,0 +1,9 @@
+FROM java:openjdk-8u92-jre-alpine
+WORKDIR /app
+ADD mcenter/ui/target/ui-0.1.0.RELEASE.jar /app/app.jar
+ADD mcenter/application.docker /app/application.properties
+EXPOSE 80:8080
+EXPOSE 21:21
+EXPOSE 6969:6969
+EXPOSE 1021-1025:1021-1025
+ENTRYPOINT ["java","-jar", "app.jar", "--spring.config.location.file:/app/application.properties"]

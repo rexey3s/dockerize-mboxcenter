@@ -1,26 +1,38 @@
-quartzdb:
-  build: quartzdb
-  ports:
-    - "5433:5432"
-mcenter_db:
-  build: mcenter_db
-  ports:
-    - "5432:5432"
-nginx-rtmp:
+version: "2"
+services:
+  quartzdb:
+    build: quartzdb
+    container_name: quartzdb
+    ports:
+     - "5433:5432"
+    networks:
+     - back-tier
+
+  mcenterdb:
+    build: mcenterdb
+    container_name: mcenterdb
+    ports:
+     - "5432:5432"
+    networks:
+     - back-tier
+  nginx-rtmp:
     image: rjrivero/nginx-rtmp
     container_name: nginx-rtmp
     ports:
-      - "8081:8080"
-      - "1935:1935"
+     - "8081:8080"
+     - "1935:1935"
     volumes:
-      - ${CONFIG_DIR_PATH}/rtmp.conf:/opt/nginx/conf.d/rtmp.conf:ro
-      - ${MEDIA_DIR_PATH}:/var/Videos
-icecast2:
-  image: infiniteproject/icecast
-  container_name: icecast2
-  ports:
+     - ${CONFIG_DIR_PATH}/rtmp.conf:/opt/nginx/conf.d/rtmp.conf:ro
+     - ${MEDIA_DIR_PATH}:/var/Videos
+    networks:
+     - back-tier
+
+  icecast2:
+    image: infiniteproject/icecast
+    container_name: icecast2
+    ports:
       - "8000:8000"
-  environment:
+    environment:
       - ICECAST_SOURCE_PASSWORD=${ICECAST_PASSWORD}
       - ICECAST_ADMIN_PASSWORD=${ICECAST_PASSWORD}
       - ICECAST_REPLAY_PASSWORD=${ICECAST_PASSWORD}
@@ -29,4 +41,25 @@ icecast2:
       - ICECAST_LOCATION=
       - ICECAST_HOSTNAME=
       - ICECAST_MAXCLIENTS=100
+    networks:
+      - back-tier
+
+  app:
+    build: java
+    container_name: mcenter_app
     
+    ports:
+      - "80:8080"
+      - "21:21"
+      - "6969:6969"
+      - "1021-1025:1021-1025"
+    volumes:
+     - ${MEDIA_DIR_PATH}:/code/ftproot/demo
+    links:
+      - mcenterdb
+      - quartzdb
+    networks:
+      - back-tier  
+
+networks:
+  back-tier:

@@ -1,0 +1,23 @@
+#management.address: 127.0.0.1
+#endpoints.shutdown.enabled: true
+#info.group: @project.groupId@
+#info.artifact: @project.artifactId@
+#info.name: @project.name@
+#info.version: @project.version@
+#vaadin.servlet.params.widgetset=com.attech.piserver.MyAppWidgetset
+#server.port = 9090
+#vaadin.servlet.urlMapping=/UI/*
+application.interface = eth0
+application.messaging_port = 6969
+application.keep-alive-interval = 20
+application.icecast_server = 127.0.0.1
+application.rtmp_server = 127.0.0.1
+application.ftp.address = 127.0.0.1
+application.ftp.port = 21
+application.ftp.user = admin
+application.ftp.password = admin
+application.ftp.passive_ports = 1024-1025
+management.context-path=/manage
+#logging.config=logback.xml
+#logging.level.org.hibernate=ERROR
+server.port = 80
