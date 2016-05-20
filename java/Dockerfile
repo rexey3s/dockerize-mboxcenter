@@ -1,26 +1,24 @@
-FROM corvis/java8
-MAINTAINER Dmitry Berezovsky <dmitry.berezovsky@logicify.com>
-
-ENV           FFMPEG_VERSION  2.6.3
-ENV           YASM_VERSION    1.3.0
-ENV           OGG_VERSION     1.3.2
-ENV           VORBIS_VERSION  1.3.4
-ENV           LAME_VERSION    3.99.5
-ENV           FAAC_VERSION    1.28
-ENV           XVID_VERSION    1.3.3
-ENV           FDKAAC_VERSION  0.1.3
-ENV           SRC             /usr/local
-ENV           LD_LIBRARY_PATH ${SRC}/lib
-ENV           PKG_CONFIG_PATH ${SRC}/lib/pkgconfig
+FROM jrottenberg/ffmpeg
 
 
-COPY compile-ffmpeg.sh /tmp/compile-ffmpeg.sh
+ENV JAVA_VERSION 8u31
+ENV BUILD_VERSION b13
 
-RUN bash /tmp/compile-ffmpeg.sh
+# Upgrading system
+RUN yum -y upgrade
+RUN yum -y install wget
 
-# Just to make sure that everything is fine
-RUN ffmpeg -buildconf
-RUN rm -f /tmp/compile-ffmpeg.sh
+# Downloading Java
+RUN wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-$BUILD_VERSION/jdk-$JAVA_VERSION-linux-x64.rpm" -O /tmp/jdk-8-linux-x64.rpm
+
+RUN yum -y install /tmp/jdk-8-linux-x64.rpm
+
+RUN alternatives --install /usr/bin/java jar /usr/java/latest/bin/java 200000
+RUN alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 200000
+RUN alternatives --install /usr/bin/javac javac /usr/java/latest/bin/javac 200000
+
+ENV JAVA_HOME /usr/java/latest
+
 WORKDIR /app
 ADD mcenter/ui/target/ui-0.1.0.RELEASE.jar /app/app.jar
 ADD mcenter/application.docker /app/application.properties
