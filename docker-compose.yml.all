@@ -44,6 +44,22 @@ services:
     networks:
       - back-tier
 
+  app:
+    build: java
+    container_name: mcenter_app
+    
+    ports:
+      - "80:8080"
+      - "21:21"
+      - "6969:6969"
+      - "1021-1025:1021-1025"
+    volumes:
+     - ${MEDIA_DIR_PATH}:/code/ftproot/demo
+    links:
+      - mcenterdb
+      - quartzdb
+    networks:
+      - back-tier  
 
-networks:  
- back-tier:
+networks:
+  back-tier:
