@@ -1,12 +1,5 @@
 version: "2"
 services:
-  redis:
-    image: redis
-    container_name: redis_playlist
-    ports:
-     - "6379:6379"
-    networks:
-     - back-tier
   quartzdb:
     build: quartzdb
     container_name: quartzdb
@@ -52,5 +45,5 @@ services:
       - back-tier
 
 
-networks:  
- back-tier:
+networks:
+  back-tier:
