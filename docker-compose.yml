@@ -5,6 +5,7 @@ services:
     container_name: redis_playlist
     ports:
      - "6379:6379"
+    restart: always
     networks:
      - back-tier
   quartzdb:
@@ -12,12 +13,14 @@ services:
     container_name: quartzdb
     ports:
      - "5433:5432"
+    restart: always
     networks:
      - back-tier
 
   mcenterdb:
     build: mcenterdb
     container_name: mcenterdb
+    restart: always
     ports:
      - "5432:5432"
     networks:
@@ -25,6 +28,7 @@ services:
   nginx-rtmp:
     image: rjrivero/nginx-rtmp
     container_name: nginx-rtmp
+    restart: always
     ports:
      - "8081:8080"
      - "1935:1935"
@@ -37,6 +41,7 @@ services:
   icecast2:
     image: infiniteproject/icecast
     container_name: icecast2
+    restart: always
     ports:
       - "8000:8000"
     environment:
