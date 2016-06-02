@@ -56,6 +56,9 @@ services:
     networks:
       - back-tier
 
+volumes:
+    mcenter-volume:
+    quartz-volume:
 
 networks:  
- back-tier:
+    back-tier:
