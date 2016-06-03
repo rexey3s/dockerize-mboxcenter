@@ -1,5 +1,13 @@
 version: "2"
 services:
+  network-store:
+    image: redis
+    container_name: network_store
+    ports:
+     - "6380:6379"
+    restart: always
+    networks:
+     - back-tier
   redis:
     image: redis
     container_name: redis_playlist
