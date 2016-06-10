@@ -1,11 +1,19 @@
 version: "2"
 services:
-  network-store:
-    image: redis
-    container_name: network_store
-    ports:
-     - "6380:6379"
+  ftp: 
+    build: ftp
+    image: mcenter-ftp
+    container_name: mcenter_ftp
+    ports: 
+     - "21:21"
+     - "49900-50000:49900-50000"
     restart: always
+    volumes:
+     - ${MEDIA_DIR_PATH}:/data/admin/demo
+    environment:
+     - HOST=${FTP_HOST}
+     - PASV_MIN_PORT=49900
+     - PASV_MAX_PORT=50000
     networks:
      - back-tier
   redis:
@@ -64,9 +72,5 @@ services:
     networks:
       - back-tier
 
-volumes:
-    mcenter-volume:
-    quartz-volume:
-
 networks:  
-    back-tier:
+   back-tier:
