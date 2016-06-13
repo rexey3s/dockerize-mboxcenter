@@ -1,16 +1,42 @@
 version: "2"
 services:
+  ftp: 
+    build: ftp
+    image: mcenter-ftp
+    container_name: mcenter_ftp
+    ports: 
+     - "21:21"
+     - "49900-50000:49900-50000"
+    restart: always
+    volumes:
+     - ${MEDIA_DIR_PATH}:/data/admin/demo
+    environment:
+     - HOST=${FTP_HOST}
+     - PASV_MIN_PORT=49900
+     - PASV_MAX_PORT=50000
+    networks:
+     - back-tier
+  redis:
+    image: redis
+    container_name: redis_playlist
+    ports:
+     - "6379:6379"
+    restart: always
+    networks:
+     - back-tier
   quartzdb:
     build: quartzdb
     container_name: quartzdb
     ports:
      - "5433:5432"
+    restart: always
     networks:
      - back-tier
 
   mcenterdb:
     build: mcenterdb
     container_name: mcenterdb
+    restart: always
     ports:
      - "5432:5432"
     networks:
@@ -18,6 +44,7 @@ services:
   nginx-rtmp:
     image: rjrivero/nginx-rtmp
     container_name: nginx-rtmp
+    restart: always
     ports:
      - "8081:8080"
      - "1935:1935"
@@ -30,6 +57,7 @@ services:
   icecast2:
     image: infiniteproject/icecast
     container_name: icecast2
+    restart: always
     ports:
       - "8000:8000"
     environment:
@@ -44,22 +72,5 @@ services:
     networks:
       - back-tier
 
-  app:
-    build: java
-    container_name: mcenter_app
-    
-    ports:
-      - "80:8080"
-      - "21:21"
-      - "6969:6969"
-      - "1021-1025:1021-1025"
-    volumes:
-     - ${MEDIA_DIR_PATH}:/code/ftproot/demo
-    links:
-      - mcenterdb
-      - quartzdb
-    networks:
-      - back-tier  
-
-networks:
-  back-tier:
+networks:  
+   back-tier:

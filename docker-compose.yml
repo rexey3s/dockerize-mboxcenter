@@ -46,7 +46,6 @@ services:
     container_name: nginx-rtmp
     restart: always
     ports:
-     - "8081:8080"
      - "1935:1935"
     volumes:
      - ${CONFIG_DIR_PATH}/rtmp.conf:/opt/nginx/conf.d/rtmp.conf:ro
@@ -71,6 +70,20 @@ services:
       - ICECAST_MAXCLIENTS=100
     networks:
       - back-tier
+  app:
+    build: java/mcenter
+    container_name: mcenter_app
+    ports:
+      - "8080:8080"
+      - "6969:6969"
+    volumes:
+      - ${MEDIA_DIR_PATH}:/app/ftproot/demo
+    links:
+      - mcenterdb
+      - quartzdb
+      - redis
+    networks:
+      - back-tier  
 
 networks:  
    back-tier:
