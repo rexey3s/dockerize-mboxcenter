@@ -2,10 +2,10 @@ version: "2"
 services:
   ftp: 
     build: ftp
-    image: mcenter-ftp
-    container_name: mcenter_ftp
+    image: mcenter_ftp
+    container_name: ftp
     ports: 
-     - "21:21"
+     - "2121:21"
      - "49900-50000:49900-50000"
     restart: always
     volumes:
@@ -18,27 +18,28 @@ services:
      - back-tier
   redis:
     image: redis
-    container_name: redis_playlist
-    ports:
-     - "6379:6379"
+    container_name: redis
+    ports: ["6379"]
     restart: always
     networks:
      - back-tier
   quartzdb:
     build: quartzdb
+    image: mcenter_quartzdb
     container_name: quartzdb
-    ports:
-     - "5433:5432"
+    ports: ["5432"]
     restart: always
     networks:
      - back-tier
 
   mcenterdb:
     build: mcenterdb
+
     container_name: mcenterdb
     restart: always
-    ports:
-     - "5432:5432"
+    ports: ["5432"]
+    volumes:
+     - "db-data:/var/lib/postgresql/data"    
     networks:
      - back-tier
   nginx-rtmp:
@@ -71,11 +72,13 @@ services:
     networks:
       - back-tier
   app:
-    build: java/mcenter
-    container_name: mcenter_app
+    build: java
+    image: mcenter_app
+    container_name: app
     ports:
-      - "8080:8080"
-      - "6969:6969"
+      - "80:8080"
+      - "69:6969"
+    restart: always
     volumes:
       - ${MEDIA_DIR_PATH}:/app/ftproot/demo
     links:
@@ -83,7 +86,10 @@ services:
       - quartzdb
       - redis
     networks:
-      - back-tier  
+      - back-tier
+
+volumes:
+   db-data:
 
 networks:  
    back-tier:
