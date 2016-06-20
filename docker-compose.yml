@@ -29,12 +29,13 @@ services:
     container_name: quartzdb
     ports: ["5432"]
     restart: always
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
     networks:
      - back-tier
 
   mcenterdb:
     build: mcenterdb
-
     container_name: mcenterdb
     restart: always
     ports: ["5432"]
@@ -80,6 +81,7 @@ services:
       - "69:6969"
     restart: always
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ${MEDIA_DIR_PATH}:/app/ftproot/demo
     links:
       - mcenterdb
