@@ -21,6 +21,9 @@ services:
     container_name: redis
     ports: ["6379"]
     restart: always
+    command: ["redis-server","--appendonly","yes"]
+    volumes:
+     - ./redisdb:/data
     networks:
      - back-tier
   quartzdb:
@@ -38,7 +41,7 @@ services:
     restart: always
     ports: ["5432"]
     volumes:
-     - "db-data:/var/lib/postgresql/data"    
+     - ./sqldb:/var/lib/postgresql/data    
     networks:
      - back-tier
   nginx-rtmp:
