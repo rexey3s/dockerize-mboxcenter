@@ -1,5 +1,44 @@
 version: "2"
 services:
+# QLTS 
+  nodejs_app:
+   build: qlts/Server
+   image: chuongdang/qlts
+   container_name: nodejs_app
+   restart: always
+   command: npm start
+   expose:
+    - "3000"
+   links:
+    - mongodb
+   environment:
+     NODE_ENV: production
+     MONGODB_ADDRESS: mongodb
+     VIRTUAL_HOST: qttbtv.hcmup.edu.vn
+     WEB_PORTS: 3000
+   networks:
+    - front-tier
+    - back-tier
+  mongodb:
+   image: mongo
+   hostname: mongodb
+   container_name: mongodb
+   volumes:
+    - ./qlts/data:/data/db
+   restart: always
+   networks:
+    - back-tier
+  nginx-proxy:
+   image: jwilder/nginx-proxy:alpine
+   container_name: nginx-proxy
+   ports:
+    - "80:80"
+   volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+   restart: always
+   networks:
+    - front-tier
+# Mbox Center
   ftp: 
     build: ftp
     image: mcenter_ftp
@@ -75,11 +114,16 @@ services:
       - back-tier
   app:
     build: java
-    image: chuongdang/mcenter_app:1216-getListFile
+    image: chuongdang/mcenter_app:latest
     container_name: app
     ports:
-      - "80:8080"
+      - "8080:8080"
       - "69:6969"
+    expose:
+      - "8080"
+    environment:
+      VIRTUAL_HOST: app.qttbtv.hcmup.edu.vn
+      WEB_PORTS: "8080"
     restart: always
     volumes:
       - ${MEDIA_DIR_PATH}:/app/ftproot/demo
@@ -89,9 +133,10 @@ services:
       - redis
     networks:
       - back-tier
-
+      - front-tier
 volumes:
    db-data:
 
 networks:  
    back-tier:
+   front-tier:

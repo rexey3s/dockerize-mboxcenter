@@ -1,3 +1,4 @@
 redisdb/*
 sqldb/*
+qlts/data/*
 *.log
